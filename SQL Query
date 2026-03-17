@@ -1,0 +1,251 @@
+create database company;
+
+create table employee (
+	employeeId , INT PRIMARY KEY AUTO_INCREEMENT,
+	name varchar(100),
+	department varchar(50),
+	salary decimal(10 , 2)
+);
+
+INSERT INTO employees (name, department, salary)
+VALUES ('Rohan', 'Sales', 65000);
+
+SELECT * FROM employees;
+
+UPDATE employees SET salary = 70000 WHERE name = 'Rohan';
+
+DELETE FROM employees WHERE name = 'Rohan';
+
+SELECT distinct SALARY FROM CUSTOMER ORDER BY SALARY;
+
+create database retail;
+
+use retail;
+
+create table customers(custno int PRIMARY KEY,
+ firstname varchar(20), lastname varchar(20),gender varchar(20), 
+age int,profession varchar(20),contactNo long,
+emailId varchar(20),
+city varchar(20), state varchar(20),
+isActive char(1),createdDate datetime, UpdatedDate datetime);
+
+create table products(productno int PRIMARY KEY, productName varchar(20), Description varchar(20), isActive char(1),createdDate datetime, UpdatedDate datetime);
+
+create table transactions(txnno int PRIMARY KEY, txndate datetime,
+custno int, amount double,productno int, spendby varchar(10),
+FOREIGN KEY (custno) REFERENCES customers(custno),
+FOREIGN KEY (productno) REFERENCES products(productno) );
+
+Table: Person
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| personId    | int     |
+| lastName    | varchar |
+| firstName   | varchar |
++-------------+---------+
+personId is the primary key (column with unique values) for this table.
+This table contains information about the ID of some persons and their first and last names.
+ 
+Table: Address
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| addressId   | int     |
+| personId    | int     |
+| city        | varchar |
+| state       | varchar |
++-------------+---------+
+addressId is the primary key (column with unique values) for this table.
+Each row of this table contains information about the city and state of one person with ID = PersonId.
+
+select 
+		p.personId , p.firstname , p.lastname , a.city , a.state 
+		  FROM person p 
+			INNER JOIN Address a on p.personId = a.personId ORDER BY p.personId ASC LIMIT 5;
+			
+select
+		p.personId , p.firstname , p.lastname , a.city , a.state FROM peron 
+		 INNER JOIN Address a on p.personId = a.personId where p.personId = 3;
+		 
+/---How to handle null values ----/
+
+select 
+       p.personId , p.firstname , p.lastname , a.city , a.state
+	     FROM person p 
+		  INNER JOIN Address a on p.person id = a.personId where a.city NOT NULL AND a.state NOT NULL;
+
+/----Creting VIEWS--/
+
+Create PersonAddressView AS  
+  select 
+       p.personId , p.firstname , p.lastname , a.city , a.state
+	     FROM person p 
+		  INNER JOIN Address a on p.person id = a.personId where a.city NOT NULL AND a.state NOT NULL;
+		  
+Create index address_state on Address(city);
+Create inded address_state on Adddress(state);
+
+cluster index normally sorted the data autopmatically.
+where is non cluster index is used to row itself.
+
+
+mysqlimport  --fields-terminated-by=, --verbose
+ --local -u root -pcloudera retail C:/Users/LENOVO/Desktop/Core_Java_Doc_And_Proj/transactions.txt
+
+
+mysqlimport --local --enable-local-infile --fields-terminated-by=, --verbose -u root -p retail "C:/Users/LENOVO/Desktop/Core_Java_Doc_And_Proj/transactions.txt"
+
+
+mysqlimport --local --enable-local-infile --fields-terminated-by=, --verbose -u root -p retail "C:/Users/LENOVO/Desktop/Core_Java_Doc_And_Proj/products.txt"
+
+
+mysqlimport --local --enable-local-infile --fields-terminated-by=, --verbose -u root -p retail "C:/Users/LENOVO/Desktop/Core_Java_Doc_And_Proj/customers.txt"
+
+SELECT 
+    t.txnno AS transaction_id,
+    t.txndate,
+    c.firstname,
+    c.lastname,
+    p.productName,
+    t.amount,
+    t.spendby
+FROM transactions t
+INNER JOIN customers c 
+    ON t.custno = c.custno
+INNER JOIN products p 
+    ON t.productno = p.productno
+LIMIT 50;
+
+	SELECT 
+		t.txnno AS transaction_id,
+		t.txndate,
+		c.firstname,
+		c.lastname,
+		p.productName,
+		t.amount,
+		t.spendby
+	FROM transactions t
+	INNER JOIN customers c 
+		ON t.custno = c.custno
+	INNER JOIN products p 
+		ON t.productno = p.productno
+	WHERE c.isActive = 'Y'
+	  AND p.isActive = 'Y'
+	  AND t.amount IS NOT NULL
+	  AND t.spendby IS NOT NULL LIMIT 100;
+	  
+	  
+	  
+	SELECT 
+		t.txnno AS transaction_id,
+		t.txndate,
+		c.firstname,
+		c.lastname,
+		p.productName,
+		t.amount,
+		t.spendby
+	FROM transactions t
+	LEFT JOIN customers c 
+		ON t.custno = c.custno
+	LEFT JOIN products p 
+		ON t.productno = p.productno
+	WHERE c.isActive = 'Y'
+	  AND p.isActive = 'Y'
+	  AND t.amount IS NOT NULL
+	  AND t.spendby IS NOT NULL LIMIT 100 Order by 1 desc;
+	  
+	SELECT 
+		t.txnno AS transaction_id,
+		t.txndate,
+		c.firstname,
+		c.lastname,
+		p.productName,
+		t.amount,
+		t.spendby
+	FROM transactions t
+	RIGHT JOIN customers c 
+		ON t.custno = c.custno
+	RIGHT JOIN products p 
+		ON t.productno = p.productno
+	WHERE c.isActive = 'Y'
+	  AND p.isActive = 'Y'
+	  AND t.amount IS NOT NULL
+	  AND t.spendby IS NOT NULL LIMIT 100;
+	  
+	  
+	  
+  SELECT c.customer_id, c.name, SUM(t.amount) AS total_spend  
+                FROM customers c JOIN transactions t  
+                ON c.customer_id = t.customer_id 
+                GROUP BY c.customer_id, c.name  
+                ORDER BY total_spend DESC LIMIT 5
+  
+  
+  /--------Spark----------/
+  
+  Spark is used for highly distributed design paralell  processing used across the clusters.
+  
+  When we submit the job using spark-submit then it initiallizes spark.context , then they allocated with the cluster manager.
+  then executor launch on work nodes.
+  
+  User conversion code converted into the scheduler and break the job into the stages .
+  
+  Task assign to scheduler , if task fails spark rettry for another execution.
+  
+  After completing the job spark context shut down.
+  
+  Important method to be call
+  ---------------------------
+  
+  Transformation -> map , filter , distinct , union , reduceByKey , flatmap , JOIN
+  
+  Action-> collect , take , first , count , reduce , saveAsTextFile
+  
+  DataLake --> Collecting of data in one place for example log , csv , json .
+  
+  DataFrame - It is used for running sql query and transforming of data.
+  
+  DataBricks - Building etl pipeline how to migrate the data.
+  
+  Data Modelling - The process of dsigning the structures to create a logical sequence of data structure.
+  
+  DDL - > Structures Table schema i.e(Create , Alter , Drop).
+  
+  DML -> SELECT , INSERT , DELETE , UPDATE
+  
+  DCL -> GRANT , REVOKE
+  
+  TCL -> Transactions , commit and ROLLBACK.
+  
+  Coalense - It is used for merging partition without reshuffling the code.
+  
+  Imple
+  -----
+  
+  val df = spark.read.text("bigData.txt");
+  val dfPart = df.repartition(100);
+  val dfCoalense = dfPart.filter(_.length > 10).Coalense(10);
+  val result = dfCoalense.groupBy("category").agg(sum(10);
+  
+  Employee --> employee_id , employee_name , dept_id , salary;
+  Department --> dept_id , dept_name;
+  
+  select e.emp_name , e.salary , d.dept_name , FROM employee e 
+   JOIN department d 
+    on e.dept_id = d.dept_id;
+	
+ Max salary per department and avg salary per Department
+ 
+ select d.dept_name max(e.salary) as max_salary,
+     avg(e.salary) as avg_salary,
+	  from employee e 
+	    JOIN Department d 
+		  on e.dept_id = d.dept_id
+		    group by d.dept_name;
+			
+if anything went wrong spark job doesn't with scratch it will cut off that point.
+
+
+  
+  
