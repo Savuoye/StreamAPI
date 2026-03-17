@@ -1,0 +1,268 @@
+
+@Validated
+@RestController
+@EnableMvc
+@RequestMapping(value = "/jstb-correction/v1")
+public class TaxRepoetingController{
+	
+	@Autowired
+	public TaxReportingDeletionService deletionService;
+	
+	 /**
+     * Delete api will remove the data from sub tables and update the status in BSB
+     * table
+     *
+     * @param mandSl
+     *                          Section of tax report
+     * @param keyIdNr
+     *                          Tax report Key id number
+     * @param keyMeldejahr
+     *                          Tax report filed year
+     * @param keyMuster
+     *                          Taxreport type whether BM1 / BM3
+     * @param keyLaufnummer
+     *                          Sequence number for Key id number
+     * @param keySysDatum
+     *                          Taxreport created date
+     * @param keyUhrzeit
+     *                          Tax report created time
+     * @param response
+     *                          Used to set the uuid in header
+     * 
+     * @return Validation result response object
+     * 
+     * @throws RecordNotFoundException
+     *                                        throws no records available in table
+     * @throws ValidationResultsException
+     *                                        throws validation error details
+     * @throws IOException
+     *                                        throws input object is not available
+     * @throws ClassNotFoundException
+     *                                        throws input class is not available
+     */
+    @PreAuthorize("hasAuthority('DELETE_TAXREPORTING')")
+    @Operation(description = "Delete tax reporting data", tags = { "taxreportingdeletion" })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Ok",
+                            content = @Content(schema = @Schema(implementation = ValidationResults.class))),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content = @Content(schema = @Schema(implementation = ValidationResults.class))),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(schema = @Schema(implementation = ValidationResults.class))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(schema = @Schema(implementation = ValidationResults.class))),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error",
+                            content = @Content(schema = @Schema(implementation = ValidationResults.class))) })
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ValidationResults> deleteTaxReportingData(
+            @Size(min = 1, max = 3) @Parameter(
+                    description = "EN: <br> mandSl" + "DE: <br> mandSl") @Valid @RequestParam(
+                            value = "mandSl",
+                            required = true) String mandSl,
+            @Size(min = 1, max = 13) @Parameter(
+                    description = "EN: <br> keyIdNr" + "DE: <br> keyIdNr") @Valid @RequestParam(
+                            value = "keyIdNr",
+                            required = true) String keyIdNr,
+            @Parameter(description = "EN: <br> keyMeldejahr" + "DE: <br> keyMeldejahr") @Valid @RequestParam(
+                    value = "keyMeldejahr",
+                    required = true) long keyMeldejahr,
+            @Parameter(description = "EN: <br> keyMuster" + "DE: <br> keyMuster") @Valid @RequestParam(
+                    value = "keyMuster",
+                    required = true) String keyMuster,
+            @Parameter(description = "EN: <br> keyLaufnummer" + "DE: <br> keyLaufnummer") @Valid @RequestParam(
+                    value = "keyLaufnummer",
+                    required = true) long keyLaufnummer,
+            @Parameter(description = "EN: <br> keySysDatum" + "DE: <br> keySysDatum") @Valid @RequestParam(
+                    value = "keySysDatum",
+                    required = true) long keySysDatum,
+            @Parameter(description = "EN: <br> keyUhrzeit" + "DE: <br> keyUhrzeit") @Valid @RequestParam(
+                    value = "keyUhrzeit",
+                    required = true) long keyUhrzeit,
+            HttpServletResponse response)
+            throws RecordNotFoundException, ValidationResultsException, IOException, ClassNotFoundException {
+        mandSl = mandSl != null ? mandSl.replaceAll("[^a-zA-Z0-9\\-\\s]+", CommonConstants.EMPTY_VALUE) : null;
+        keyIdNr = keyIdNr != null ? keyIdNr.replaceAll("[^a-zA-Z0-9\\-\\s]+", CommonConstants.EMPTY_VALUE) : null;
+        keyMuster = keyMuster != null ? keyMuster.replaceAll("[^a-zA-Z0-9\\-\\s]+", CommonConstants.EMPTY_VALUE) : null;
+
+        LOG.trace("[TaxReportingController] [deleteTaxReportingData] Enter into delete tax report method");
+
+        mandSl = mandSl != null ? mandSl.replaceAll("[^a-zA-Z0-9\\-\\s]+", CommonConstants.EMPTY_VALUE) : null;
+        keyIdNr = keyIdNr != null ? keyIdNr.replaceAll("[^a-zA-Z0-9\\-\\s]+", CommonConstants.EMPTY_VALUE) : null;
+        keyMuster = keyMuster != null ? keyMuster.replaceAll("[^a-zA-Z0-9\\-\\s]+", CommonConstants.EMPTY_VALUE) : null;
+
+        ValidationResults validationResults = taxReportingDeletionService.deleteTaxReportingData(mandSl, keyIdNr,
+                keyMeldejahr, keyMuster, keyLaufnummer, keySysDatum, keyUhrzeit);
+
+        LOG.trace("[TaxReportingController] [deleteTaxReportingData] Exit delete tax report method");
+
+        return new ResponseEntity<>(validationResults, HttpStatus.OK);
+    }
+}
+
+public interface ProductRepository implements CrudRepository<Product , Integer>{
+	Product abstract saveProduct(Product product);
+	Product abstract deleteProduct(Integer id);
+}
+
+public class ProductServiceImpl implements ProductService{
+	 private final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+	 
+	 @Autowired
+	 private ProductRepository productRepository;
+	 
+	 public void deleteProduct(Integer id)
+	 {
+		 return productRepository.id;
+	 }
+}
+
+
+@RestController
+@RequestMspping("/product")
+public class ProductController{
+	
+	@Autowired
+	private ProductService productService;
+	
+	@RequestMapping(value="/delete/{id}", method = RequestMethod.DELETE, produces = "application/json")
+	private ResponseEntity<Product> deleteProduct(@PathVariable Integer id)
+	{
+		productService.deleteProduct(id);
+		return new ResponseEntity<Product>("Delete Product Successfully" , HttpStatus.ok);
+	}
+}
+
+Arrays
+------
+
+int [] numbers;
+String [] names;
+
+int [] numnbers = {10, 20, 30, 40, 50};
+String [] cars = {"Volvo", "BMW", "Ford", "Mazda"};
+
+for(String car : cars)
+{
+	System.out.println(car);
+}
+
+int numbers[] = {5 , 2 , 9 , 4 , 7 , 7};
+arrays.sort(numnbers);
+
+int numbers[] = {65 , 67 , 69 , 71 , 73 , 75 , 76};
+
+Two merge two numbers into single array.
+
+int [] mergedArray = IntStream.concat(IntStream.of(numbers) , IntStream.of(arr)).toArray());
+
+
+
+    @Autowired
+    private UserService userService;
+
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
+
+
+
+@GetMapping("/user")
+@CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
+@Retry(name = "ratingHotelService", fallbackMethod = "ratingHotelFallback")
+@RateLimiter(name = "userRateLimiter", fallbackMethod = "ratingHotelFallback")
+public ResponseEntity<User> getSingleUser(@PathVariable String UserId)
+{
+	logger.info("Get User single handed : UserController");
+	User user = userService.getUser(userId);
+	return ResponseEntity.ok(user);
+}
+
+public ResponseEntity<User> ratingFallBack(String UserId , Exception ex)
+{
+		ex.printStackTrace();
+        User user = User.builder().email("dummy@gmail.com").name("Dummy").about("This user is created dummy because some service is down").userId("141234").build();
+        return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
+}
+
+Adding the dependency in pom.xml
+--------------------------------
+
+<dependency>
+    <groupId>io.github.resilience4j</groupId>
+    <artifactId>resilience4j-spring-boot3</artifactId>
+</dependency>
+<dependency>
+    <groupId>io.github.resilience4j</groupId>
+    <artifactId>resilience4j-all</artifactId>
+</dependency>
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      ratingHotelBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+  retry:
+    instances:
+      ratingHotelService:
+        maxAttempts: 3
+        waitDuration: 2s
+  ratelimiter:
+    instances:
+      userRateLimiter:
+        limitForPeriod: 5
+        limitRefreshPeriod: 1s
+        timeoutDuration: 0s
+
+Saga design pattern is a way to handle distributed transaction in microservice without relying into a centralized transaction .
+Saga break into a local transactions.
+
+There are two type of saga 
+
+1)Orchestration based 2) Chreography event driven is called choreography pattern
+
+@Query("Select * from tutorials" , nativeQuery = true)
+Page<Tutorial> findByPublished(Pageable pagebale)
+
+int size = 3 , int page = 0;
+
+Pageable pageable = PageRequest.of(size , max);
+
+tutorials = tutorialRepository.findByPublished(pageable).getContent();
+
+Map<String , List<Employee>> empByDept = empList.stream().collect(Collectors.groupingBy(Employee::getName());
+
+emp.stream.sorted(Comparator.comparying(Employee::getSalary()).reversed();
+
+To control large traffic over springboot while hitting the api 
+
+Here are the following steps :-
+
+1)Implelment caching mechanism
+
+	@Cacheable
+	public User getUser(Long id)
+
+2)Implementing thread pool mechanism
+
+ server.tomcat.threads.max = 500;
+
+3) Avoid n+1 issue .
+
+
+
