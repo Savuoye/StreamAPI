@@ -1,0 +1,25 @@
+Circular Dependency
+===================
+
+The two or more dependedncy which depend on each other.
+A--> Depend on B
+B-->Depend on A
+
+This is the issue of Spring depeendency injection which bean need to inject first.
+
+@Compomnent
+public class Service A
+{
+    @Autowired
+    public Service A{
+    }
+
+    @Autowired
+    public Service B{
+    }
+}
+
+@Autowired
+@Lazy
+public Service B{
+}
