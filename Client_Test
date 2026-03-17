@@ -1,0 +1,296 @@
+package com.infotech;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class ClientTest {
+
+	public static void main(String[] args) {
+
+		List<Student> list = new ArrayList<>();
+
+		list.add(new Student("PK", 23));
+		list.add(new Student("KK", 26));
+		list.add(new Student("MK", 23));
+		list.add(new Student("SK", 21));
+		list.add(new Student("RK", 40));
+		list.add(new Student("BK", 30));
+		list.add(new Student("DK", 80));
+
+		Stream<Student> filteredList = list.stream().filter(s -> s.getAge() > 25);
+		filteredList.forEach(System.out::println);
+
+		System.out.println("-------------------");
+
+		boolean allMatch = list.stream().allMatch(s -> s.getName().contains("K"));
+		System.out.println(allMatch);
+
+		System.out.println("-------------------");
+		boolean anyMatch = list.stream().anyMatch(s -> s.getAge() > 35);
+		System.out.println(anyMatch);
+		System.out.println("-------------------");
+		boolean noneMatch = list.stream().noneMatch(s -> s.getAge() > 55);
+		System.out.println(noneMatch);
+
+		List<String> listElement = Arrays.asList("Java", "JavaScript", "Python", "C++", "C#");
+		List<String> filteredData = listElement.stream().filter(s -> s.startsWith("P")).collect(Collectors.toList());
+		filteredData.forEach(System.out::println);
+
+		System.out.println("-----------------------------------");
+
+		/*
+		 * Filtered data using Comparator
+		 */
+		List<String> dataRecords = Arrays.asList("Java", "Kafka", "C#", "C++");
+		List<String> elementsCompare = dataRecords.stream().sorted((x, y) -> x.compareTo(y))
+				.collect(Collectors.toList());
+		elementsCompare.forEach(System.out::println);
+
+		System.out.println("-----------------------------------");
+
+		/*
+		 * Map iteration using Lambda
+		 */
+
+		Map<String, Integer> hashMap = new HashMap<String, Integer>();
+		hashMap.put("Java", 8);
+		hashMap.put("Core Java", 9);
+		hashMap.put("Python", 1);
+		hashMap.put("JavaScript", 2);
+
+		hashMap.forEach((key, value) -> {
+			System.out.println("key :" + key + "value :" + value);
+		});
+
+		System.out.println("-----------------------------------");
+
+		/*
+		 * Convert upper version
+		 */
+		List<String> elements = Arrays.asList("Java", "Python", "Spring", "Lambda");
+		List<String> data = elements.stream().map(String::toUpperCase).collect(Collectors.toList());
+		data.forEach(System.out::println);
+
+		/*
+		 * Convert to Lower Case
+		 * 
+		 */
+		List<String> elementsUpperCase = Arrays.asList("Java", "Python", "Spring", "Lamda");
+		List<String> elementData = elementsUpperCase.stream().map(String::toUpperCase).collect(Collectors.toList());
+		elementData.forEach(System.out::println);
+
+		List<Integer> integerData = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+		List<Integer> elementsRow = integerData.stream().filter(s -> s % 2 == 0).collect(Collectors.toList());
+		elementsRow.forEach(System.out::println);
+
+		System.out.println("-----------------------------------");
+
+		/*
+		 * Counting elements
+		 */
+		List<Integer> countElements = Arrays.asList(1, 2, 2, 3, 4, 5, 6, 7, 7, 8, 9, 10);
+		List<Integer> distinctData = countElements.stream().distinct().collect(Collectors.toList());
+		distinctData.forEach(System.out::println);
+
+		System.out.println("-----------------------------------");
+		/*
+		 * Find Length of String
+		 */
+
+		List<String> mapToString = Arrays.asList("Java", "Spring", "Kafka");
+		List<Integer> length = mapToString.stream().map(String::length).collect(Collectors.toList());
+		length.forEach(System.out::println);
+
+		System.out.println("-----------------------------------");
+
+		/*
+		 * Removing duplicate elements
+		 */
+
+		List<String> duplicateRecords = Arrays.asList("Java", "Spring", "Core Java", "C#", "C++", "Spring", "Java");
+		List<String> removingDuplicate = duplicateRecords.stream().collect(Collectors.toList());
+		Set<String> set = removingDuplicate.stream().collect(Collectors.toSet());
+		set.forEach(System.out::println);
+
+		System.out.println("-----------------------------------");
+
+		/*
+		 * To find second highest element
+		 */
+		List<Integer> secondHighestElement = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+		int secondHighestData = secondHighestElement.stream().distinct().sorted(Comparator.reverseOrder()).skip(1)
+				.findFirst().orElse(null);
+		System.out.println("Second highest elelent :" + secondHighestData);
+
+		System.out.println("---------------------------------------------------");
+
+		/*
+		 * To Find Highest Element
+		 */
+
+		List<Integer> highestElement = Arrays.asList(2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+		Integer highestRecord = highestElement.stream().max((c1, c2) -> c1.compareTo(c2)).orElse(null);
+
+		System.out.println("Highest Element Record :" + highestRecord);
+
+		System.out.println("----------------------------------------------------------");
+
+		/*
+		 * To Find Minimum Value
+		 */
+
+		List<Integer> minimumValue = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+		int minimalValue = minimumValue.stream().mapToInt(Integer::intValue).min().orElseThrow(null);
+		System.out.println("Minimum Value :" + minimalValue);
+
+		/*
+		 * Using of concat and putting all 0's at the end
+		 */
+
+		System.out.println("----------------------------------------------------------");
+
+		List<Integer> arrData = Arrays.asList(1, 0, 8, 7, 0, 3);
+		List<Integer> result = Stream.concat(arrData.stream().filter(i -> i != 0), arrData.stream().filter(i -> i == 0))
+				.collect(Collectors.toList());
+
+		result.forEach(System.out::println);
+
+		System.out.println("----------------------------------------------------------");
+
+		/*
+		 * Calculating average age
+		 */
+
+		List<Person> persons = Arrays.asList(new Person("Alice", 25), new Person("Bob", 30), new Person("Charlie", 35));
+		OptionalDouble averageAge = persons.stream().mapToInt(Person::getAge).average();
+		System.out.println(averageAge);
+
+		System.out.println("-------------------------------------------------------------------");
+
+		/*
+		 * Flat Map UseCase
+		 */
+
+		List<List<Integer>> nestedArray = Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3, 4), Arrays.asList(5, 6));
+		List<Integer> flatMap = nestedArray.stream().flatMap(List::stream).collect(Collectors.toList());
+		flatMap.forEach(System.out::println);
+
+		System.out.println("-------------------------------------------------------------------");
+
+		/*
+		 * Shuffling of data and use of FlatMap using Streams
+		 */
+
+		List<DataPerson> dataPerson = Arrays.asList(new DataPerson("Alice", Arrays.asList("Reading", "Swimming")),
+				new DataPerson("Bob", Arrays.asList("Cycling", "Gaming")));
+
+		List<String> dataRecord = dataPerson.stream().flatMap(p -> p.getHobbies().stream())
+				.collect(Collectors.toList());
+		dataRecord.forEach(System.out::println);
+
+		Collections.shuffle(dataRecord);
+		System.out.println(dataRecord);
+
+		if (dataRecord.remove("Cycling")) {
+			dataRecord.add(1, "Cycling");
+		}
+
+		System.out.println(dataRecord);
+
+		System.out.println("-------------------------------------------------------------------");
+
+		/*
+		 * Iterating elements using collection
+		 */
+		List<String> dataList = Arrays.asList("Ankit", "Soni", "Joseph", "Dotnet", "Java");
+		Iterator<String> records = dataList.iterator();
+		while (records.hasNext()) {
+			String names = records.next();
+			System.out.println(names);
+		}
+
+		System.out.println("-------------------------------------------------------------------");
+
+		/*
+		 * To find the non-repetable character in string using stream
+		 */
+		String str = "Dhirendra";
+		List<String> charArray = Arrays.asList(str.split(""));
+		Optional<String> dataArray = charArray.stream().skip(1).findAny();
+		System.out.println("Second non-repetable character :" + dataArray);
+
+		/*
+		 * Two list into an sorted list now have to merge using streams
+		 */
+
+		List<Integer> sortedListA = Arrays.asList(1, 3, 5, 7);
+		List<Integer> sortedListB = Arrays.asList(2, 4, 6, 8);
+
+		List<Integer> mergeSortedList = Stream.concat(sortedListA.stream(), sortedListB.stream()).sorted()
+				.collect(Collectors.toList());
+
+		mergeSortedList.forEach(System.out::println);
+
+		/*
+		 * To find the repeatable character using streams
+		 */
+		@SuppressWarnings("unused")
+		String dataString = "aabbxxddccff";
+		List<String> characterString = Arrays.asList(dataString.split(""));
+
+		Map<String, Long> dataCharacter = characterString.stream()
+				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+		System.out.println("Counting of all elements :" + dataCharacter);
+
+		Optional<String> secondRepeatable = characterString.stream().distinct().filter(s -> dataCharacter.get(s) > 1)
+				.skip(1).findFirst();
+
+		secondRepeatable.ifPresent(
+				ch -> System.out.println("Character of element: " + ch + " Count: " + dataCharacter.get(ch)));
+
+		/*
+		 * Intermediate Operation in Java which is commonly used in i.e map , filter ,
+		 * sorted whereas terminal operations which is commonly used i.e collect ,
+		 * forEach ,reduce
+		 */
+
+		/*
+		 * Counting of elements using streams
+		 */
+
+		Integer[] numData = { 1, 1, 2, 3, 3, 4, 4, 5, 5, 6, 7, 7, 8, 9, 9, 10 };
+		List<Integer> listNum = Arrays.asList(numData);
+
+		Map<Object, Long> dataNum = listNum.stream().collect(Collectors.groupingBy(n -> n, Collectors.counting()));
+		System.out.println("Counting of each Elements :" + dataNum);
+
+		/*
+		 * Finding the second count
+		 */
+
+		Optional<Integer> dataLRecords = listNum.stream().distinct().filter(s -> dataNum.get(s) > 1).skip(1)
+				.findFirst();
+		/* System.out.println("Counting of second elements :" + dataLRecords); */
+		if (dataLRecords.isPresent()) {
+			Integer dataElements = dataLRecords.get();
+			Long count = dataNum.get(dataElements);
+
+			System.out.println("Second duplicate elements :" + dataElements + " " + "Counting of elements :" + count);
+		}
+
+	}
+
+}
