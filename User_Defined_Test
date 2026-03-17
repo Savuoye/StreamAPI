@@ -1,0 +1,195 @@
+package com.infotech;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class ClientTest {
+
+	public static void main(String[] args) {
+
+		List<Student> list = new ArrayList<>();
+
+		list.add(new Student("PK", 23));
+		list.add(new Student("KK", 26));
+		list.add(new Student("MK", 23));
+		list.add(new Student("SK", 21));
+		list.add(new Student("RK", 40));
+		list.add(new Student("BK", 30));
+		list.add(new Student("DK", 80));
+
+		Stream<Student> filteredList = list.stream().filter(s -> s.getAge() > 25);
+		filteredList.forEach(System.out::println);
+
+		System.out.println("-------------------");
+
+		boolean allMatch = list.stream().allMatch(s -> s.getName().contains("K"));
+		System.out.println(allMatch);
+
+		System.out.println("-------------------");
+		boolean anyMatch = list.stream().anyMatch(s -> s.getAge() > 35);
+		System.out.println(anyMatch);
+		System.out.println("-------------------");
+		boolean noneMatch = list.stream().noneMatch(s -> s.getAge() > 55);
+		System.out.println(noneMatch);
+
+		List<String> listRecords = Arrays.asList("Java", "Spring", "Lamda", "Core Java", "C#", "C++", "Python");
+		listRecords.forEach(System.out::println);
+
+		List<String> filterRecords = Arrays.asList("Java", "Spring", "Lamda", "Core Java", "C#", "C++", "Python");
+		List<String> data = filterRecords.stream().filter(s -> s.startsWith("J")).collect(Collectors.toList());
+		data.forEach(System.out::println);
+
+		List<String> sortingElements = Arrays.asList("Java", "Lamda", "Kafka");
+		List<String> sortedData = sortingElements.stream().sorted((s1, s2) -> s1.compareTo(s2))
+				.collect(Collectors.toList());
+		sortedData.forEach(System.out::println);
+
+		/*
+		 * Filtering Data using any start wjth method
+		 */
+		List<String> listElement = Arrays.asList("Java", "JavaScript", "Python", "C++", "C#");
+		List<String> filteredData = listElement.stream().filter(s -> s.startsWith("P")).collect(Collectors.toList());
+		filteredData.forEach(System.out::println);
+
+		System.out.println("----------------------------------------------------------");
+
+		/*
+		 * Filtered Data using Comparator
+		 */
+
+		List<String> dataRecords = Arrays.asList("Java", "Kafka", "C#", "C++");
+		List<String> elementsCompare = dataRecords.stream().sorted((x, y) -> x.compareTo(y))
+				.collect(Collectors.toList());
+		elementsCompare.forEach(System.out::println);
+
+		System.out.println("--------------------------------------------------------");
+
+		/*
+		 * Map iteration using Lambda
+		 */
+		Map<String, Integer> hashMap = new HashMap<>();
+		hashMap.put("Java", 8);
+		hashMap.put("Core Java", 9);
+		hashMap.put("Python", 1);
+		hashMap.put("JavaScript", 2);
+
+		hashMap.forEach((key, value) -> {
+			System.out.println("key :" + key + "value :" + value);
+		});
+
+		System.out.println("--------------------------------------------------------");
+
+		/*
+		 * Convert to upper version
+		 */
+		List<String> elements = Arrays.asList("Java", "Python", "Spring", "Lambda");
+		List<String> elementConversion = elements.stream().map(String::toUpperCase).collect(Collectors.toList());
+		elementConversion.forEach(System.out::println);
+
+		System.out.println("--------------------------------------------------------");
+		/*
+		 * Length of String
+		 */
+		List<String> elementLength = Arrays.asList("Java", "Python", "Spring", "Lambda");
+		List<Integer> elementStructure = elementLength.stream().map(String::length).collect(Collectors.toList());
+		elementStructure.forEach(System.out::println);
+
+		System.out.println("--------------------------------------------------------");
+
+		/*
+		 * Removing duplicate elements
+		 * 
+		 */
+
+		List<String> duplicateRecords = Arrays.asList("Java", "Spring", "Core Java", "C#", "C++", "Spring", "Java");
+		Set<String> removingDuplicate = duplicateRecords.stream().collect(Collectors.toSet());
+		removingDuplicate.forEach(System.out::println);
+
+		/*
+		 * Counting elements
+		 */
+		List<Integer> countElements = Arrays.asList(1, 2, 2, 3, 4, 5, 6, 7, 7, 8, 9, 10);
+		List<Integer> elementCounting = countElements.stream().distinct().collect(Collectors.toList());
+		elementCounting.forEach(System.out::println);
+
+		System.out.println("--------------------------------------------------------");
+
+		/*
+		 * To Find Second Highest Element
+		 */
+		List<Integer> secondHighestElement = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+		int secondHighestData = secondHighestElement.stream().distinct().sorted(Comparator.reverseOrder()).skip(1)
+				.findFirst().orElse(null);
+
+		System.out.println("Second Highest Data :" + secondHighestData);
+
+		System.out.println("--------------------------------------------------------");
+
+		/*
+		 * To Find Highest Element
+		 */
+
+		List<Integer> highestElement = Arrays.asList(2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+		Integer highestData = highestElement.stream().max((c1, c2) -> c1.compareTo(c2)).orElse(null);
+		System.out.println("Highest Element Record :" + highestData);
+
+		/*
+		 * To find the missing array using streams
+		 */
+		int arr[] = { -1, 3, 0, 2, 6 };
+		List<int[]> missingElements = Arrays.asList(arr);
+		List<int[]> arrData = missingElements.stream().sorted().collect(Collectors.toList());
+		Set<int[]> setData = new HashSet<>(arrData);
+
+		setData.forEach(System.out::println);
+
+		String str = "Java is a good language";
+		List<String> dataString = Arrays.asList(str.split(""));
+		Map<String, Long> dataValue = dataString.stream()
+				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+		System.out.println("Counting Strings :" + dataValue);
+
+		String dataR = "Hello25632563World";
+		List<String> dataRec = Arrays.asList(dataR.split(""));
+
+		Map<String, Long> dataRecord = dataRec.stream().filter(s -> s.matches("\\d")) // keep only digits
+				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+		System.out.println("Counting of String :" + dataRecord);
+
+		List<String> names = Arrays.asList("Ankit", "Soni", "Java");
+		String dataNames = names.stream().filter(s -> s.startsWith("z")).findFirst().orElse("Not found name with Z");
+		System.out.println("dataNames :" + dataNames);
+
+		String dataCountingWords = "Ankit is software developer & Ankit knows software architecture";
+		List<String> dataSet = Arrays.asList(dataCountingWords.split("\\W+"));
+
+		Map<String, Long> charDataSet = dataSet.stream()
+				.filter(s -> s.equalsIgnoreCase("Ankit") || s.equalsIgnoreCase("software"))
+				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+		System.out.println("Counnting of words :" + charDataSet);
+
+		Integer[] records = { 4, 5, 9, 10, 7 };
+		List<Integer> dataL = Arrays.asList(records);
+		System.out.println(dataL);
+
+		String charString = "ap983yte#4p";
+		List<String> dataCharacter = Arrays.asList(charString.split(""));
+		Map<String, Long> countingNumbersAndString = dataCharacter.stream()
+				.filter(s -> s.matches("\\d") || s.matches("[a-zA-Z]"))
+				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+		System.out.println("Counting of Strings and Numbers :" + countingNumbersAndString);
+
+	}
+
+}
