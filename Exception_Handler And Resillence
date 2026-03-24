@@ -1,0 +1,178 @@
+rrays
+------
+
+int [] numbers;
+String [] names;
+
+int [] numnbers = {10, 20, 30, 40, 50};
+String [] cars = {"Volvo", "BMW", "Ford", "Mazda"};
+
+for(String car : cars)
+{
+	System.out.println(car);
+}
+
+int numbers[] = {5 , 2 , 9 , 4 , 7 , 7};
+arrays.sort(numnbers);
+
+int numbers[] = {65 , 67 , 69 , 71 , 73 , 75 , 76};
+
+Two merge two numbers into single array.
+
+int [] mergedArray = IntStream.concat(IntStream.of(numbers) , IntStream.of(arr)).toArray());
+
+
+
+    @Autowired
+    private UserService userService;
+
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
+
+
+
+@GetMapping("/user")
+@CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
+@Retry(name = "ratingHotelService", fallbackMethod = "ratingHotelFallback")
+@RateLimiter(name = "userRateLimiter", fallbackMethod = "ratingHotelFallback")
+public ResponseEntity<User> getSingleUser(@PathVariable String UserId)
+{
+	logger.info("Get User single handed : UserController");
+	User user = userService.getUser(userId);
+	return ResponseEntity.ok(user);
+}
+
+public ResponseEntity<User> ratingFallBack(String UserId , Exception ex)
+{
+		ex.printStackTrace();
+        User user = User.builder().email("dummy@gmail.com").name("Dummy").about("This user is created dummy because some service is down").userId("141234").build();
+        return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
+}
+
+Adding the dependency in pom.xml
+--------------------------------
+
+<dependency>
+    <groupId>io.github.resilience4j</groupId>
+    <artifactId>resilience4j-spring-boot3</artifactId>
+</dependency>
+<dependency>
+    <groupId>io.github.resilience4j</groupId>
+    <artifactId>resilience4j-all</artifactId>
+</dependency>
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      ratingHotelBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+  retry:
+    instances:
+      ratingHotelService:
+        maxAttempts: 3
+        waitDuration: 2s
+  ratelimiter:
+    instances:
+      userRateLimiter:
+        limitForPeriod: 5
+        limitRefreshPeriod: 1s
+        timeoutDuration: 0s
+
+Saga design pattern is a way to handle distributed transaction in microservice without relying into a centralized transaction .
+Saga break into a local transactions.
+
+There are two type of saga 
+
+1)Orchestration based 2) Chreography event driven is called choreography pattern
+
+@Query("Select * from tutorials" , nativeQuery = true)
+Page<Tutorial> findByPublished(Pageable pagebale)
+
+int size = 3 , int page = 0;
+
+Pageable pageable = PageRequest.of(size , max);
+
+tutorials = tutorialRepository.findByPublished(pageable).getContent();
+
+Map<String , List<Employee>> empByDept = empList.stream().collect(Collectors.groupingBy(Employee::getName());
+
+emp.stream.sorted(Comparator.comparying(Employee::getSalary()).reversed();
+
+To control large traffic over springboot while hitting the api 
+
+Here are the following steps :-
+
+1)Implelment caching mechanism
+
+	@Cacheable
+	public User getUser(Long id)
+
+2)Implementing thread pool mechanism
+
+ server.tomcat.threads.max = 500;
+
+3) Avoid n+1 issue .
+
+
+To implement custom exception  in java
+---------------------------------------
+
+public class AgeNotEligibleException extends Exception { (--Checked Exception---)
+	public AgeNotEligibleException(String message)
+	{
+		super(message);
+	}	
+}
+
+public class InvalidTransactionException extends RuntimeException{ -----Unchecked Exception---)
+	public InvalidTransactionException(String message)
+	{
+		super(message);
+	}
+}
+
+Now using with the throw keyword 
+
+public class RegistrationService{
+	public void registerUser(int age) throws AgeNotEligibleException{
+		if(age < 18)
+		{
+			throw new AgeNotFoundException("Age must be greater than 18");
+		}
+		System.out.println("User registered successfully");
+	}
+}
+
+@RestController
+@RequestMapping("/api/register")
+public class RegistrationController{
+	private final RegistrationService registrationService;
+	
+	@PostMapping
+	public String register(@RequestParam int age)
+	{
+		return registrationService.regiterUser(age);
+	}
+}
+
+@ControllerAdvice
+public class GlobalExceptionHandler{
+	@ExceptionHandler(AgeNotEligibleException.class)
+    public ResponseEntity<String> handleAgeNotEligible(AgeNotEligibleException ex) {
+        return new ResponseEntity<>("Registration failed: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+	
+	@ExceptionHandler(Exception.class) // fallback for other exceptions
+    public ResponseEntity<String> handleGeneral(Exception ex) {
+        return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+
+{
+  "error": "Registration failed: Age must be 18 or above to register."
+}
