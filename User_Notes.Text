@@ -265,4 +265,111 @@ Here are the following steps :-
 3) Avoid n+1 issue .
 
 
+public interface UserRepository implements JpaRepository<User , Long>{
+	
+	@Query(value = "select id , name from users" , nativeQuery = true)
+	List<Object[]> findRawUsers();
+}
+
+private List<Users> getAllUsers(List<Object[]> queryResults)
+{
+	List<Users> users = new ArrayList<>();
+	for(Object[] row : queryResults)
+	{
+		Long id = ((Number) row[0]).longValue();
+		String name = (String) row[1];
+	}
+}
+
+To find the very highly experienced employee we can use sorted concept
+
+public class Employee{
+	private String name;
+	private int yearOfJoining;
+}
+	List<Employee> empList = Arrays.asList(
+								new Employee("A" , 2015),
+								new Employee("B" , 2016),
+								new Employee("C" , 2010);
+								new Employee("D" , 2020);
+								new Employee("E" , 2030);
+								
+	empList.stream().sorted((e1 , e2)->e1.getYearofJoining().compareTo(e2.getYearofJoining()).skip(1).findFirst();
+	
+	Abstraction Concept in Java
+	---------------------------
+	Abstract class have incomplete fucntiionality.So we make an object of subclass not the parent class.It may also have
+	concrete method as well as non concrete method.
+	
+	abstract class Animal{
+		abstract void sound();	
+	}
+	class Dog extends Animal{
+		@Override
+		public void sound()
+		{
+			System.out.println("Woof Woof");
+		}
+		
+	}	
+	public static void main(String [] args)
+	{
+		Animal myDog = new Dog();
+		myDog.sound();
+	}
+	
+	@Springboot application is the combination of @SpringbootConfiguration  + @EnableAutoConfiguration + @ComponentScan
+	
+	Java does not support multiple inheritence you cannot extend the same class at one time.
+	Then there is an ambiguity this is also called diamond pick problem.
+	
+	public class A{
+		public void show()
+		{
+			System.out.println("Class A");
+
+		}
+		
+	}
+	
+	public class B {
+    void show() {
+        System.out.println("Class B");
+    }
+}
+
+class C extends A, B {  // Compilation error
+}
+
+interface Animal {
+    void sound();
+}
+
+interface Pet {
+    void play();
+}
+
+class Dog implements Animal, Pet {
+    @Override
+    public void sound() {
+        System.out.println("Woof Woof");
+    }
+
+    @Override
+    public void play() {
+        System.out.println("Dog is playing fetch");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog myDog = new Dog();
+        myDog.sound(); // Woof Woof
+        myDog.play();  // Dog is playing fetch
+    }
+}
+
+In java 1.8 when collision occur in hashmap so it is handled by linked list which exceeds threshold value but in java 1.8
+automaticvally is converted into redblack tree which exceed the threshold value
+
 
